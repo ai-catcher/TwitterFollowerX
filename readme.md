@@ -2,5 +2,9 @@
 
 
 
-来互关不 @ThanksuTrump(https://x.com/ThanksuTrump)
+目标一万蓝v互关 脚本暂不发布
+
+
+
+来互关 @ThanksuTrump(https://x.com/ThanksuTrump)
 
