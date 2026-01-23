@@ -4,7 +4,7 @@
 
 来互关 [@ThanksuTrump](https://x.com/ThanksuTrump)
 
-新增关注检测脚本 extract_users.py 检测哪些账号未回关 以及分析关注数据
+新增关注检测脚本 scraper_v6.py 检测哪些账号未回关 以及分析关注数据
 
 scraper_v6.py使用方法  
 1.(可选)无法直接访问x的电脑 开启tun模式vpn  
