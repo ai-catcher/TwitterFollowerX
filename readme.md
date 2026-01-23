@@ -6,7 +6,7 @@
 
 新增关注检测脚本 extract_users.py 检测哪些账号未回关 以及分析关注数据
 
-scraper_v6.py使用方法
+scraper_v6.py使用方法  
 1.(可选)无法直接访问x的电脑 开启tun模式vpn  
 2.(可选)安装Python 3.13.2 已安装可以跳过 太新或太旧的版本运行可能故障  
 3.(可选)安装运行库已安装的可以跳过 打开cmd 运行 pip install DrissionPage colorama  
