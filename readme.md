@@ -24,17 +24,17 @@ scraper_v6.py使用方法
 11.排除掉前面xhunt评分高的kol你就知道哪些人你关注了但他没回关你 接下来选择要一个个联系让回关还是直接取关  
 12.有两千人没回我关 看到的请回关 长期不回的一一取关!  
 
-batch_block_v3.py使用方法 
-1.(可选)无法直接访问x的电脑 开启tun模式vpn 
-2.(可选)安装Python 3.13.2 已安装可以跳过 
-太新或太旧的版本运行可能故障 
-3.(可选)安装运行库已安装的可以跳过 打开cmd 运行 pip install playwright
-4.打开cmd 运行 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\yourfolder\" 把C:\Program Files\Google\Chrome\Application\chrome.exe换成你chrome浏览器位置把C:\yourfolder\换成你新建的一个空文件夹 
-5.在打开的浏览器里登录x账号 
-6.在目录下users.txt里粘贴你要屏蔽的用户列表 一行一个例如
-@user1
-@user2
-7.打开cmd运行脚本python batch_block_v3.py
+batch_block_v3.py使用方法  
+1.(可选)无法直接访问x的电脑 开启tun模式vpn  
+2.(可选)安装Python 3.13.2 已安装可以跳过  
+太新或太旧的版本运行可能故障  
+3.(可选)安装运行库已安装的可以跳过 打开cmd 运行 pip install playwright  
+4.打开cmd 运行 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222  --user-data-dir="C:\yourfolder\" 把C:\Program Files\Google\Chrome\Application\chrome.exe换成你chrome浏览器位置把C:\yourfolder\换成你新建的一个空文件夹  
+5.在打开的浏览器里登录x账号  
+6.在目录下users.txt里粘贴你要屏蔽的用户列表 一行一个例如  
+@user1  
+@user2  
+7.打开cmd运行脚本python batch_block_v3.py  
 
 
 
