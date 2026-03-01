@@ -43,7 +43,11 @@ def 获取用户输入():
         滚动延迟 = 2.5
         print(f"{Fore.RED}输入无效,使用默认延迟: {滚动延迟}")
 
-    return 目标链接, 滚动延迟
+    # 是否需要个人简介
+    简介输入 = input(f"是否在此次导出中包含'个人简介'列? 会打乱CSV排版 (y/n, 回车默认: n): ").strip().lower()
+    包含简介 = (简介输入 == 'y')
+
+    return 目标链接, 滚动延迟, 包含简介
 
 def 滚动策略(页面对象, 滚动次数, 延迟):
     """
@@ -105,20 +109,22 @@ def update_cache_from_packet(数据包响应):
                         用户名 = 核心信息.get('screen_name') # 不带 @
                         if not 用户名: continue
 
-                        # 判断认证类型: 蓝V / 金V / 白板
+                        # 判断认证类型: 蓝V / 白板 等其他情况
                         认证类型 = "白板"
-                        if 用户结果.get('is_blue_verified'):
-                            # 检查是否为金V（Business/Affiliate 认证）
-                            标签信息 = 用户结果.get('affiliates_highlighted_label', {})
-                            标签详情 = 标签信息.get('label', {})
-                            标签徽章 = 标签详情.get('badge', {})
-                            徽章URL = 标签徽章.get('url', '')
-                            has_professional = bool(用户结果.get('professional'))
-                            has_affiliate_badge = bool(徽章URL)
-                            if has_professional or has_affiliate_badge:
-                                认证类型 = "金V"
-                            else:
-                                认证类型 = "蓝V"
+                        验证信息 = 用户结果.get('verification') or {}
+                        类型 = 验证信息.get('verified_type')
+                        
+                        if 类型:
+                            认证类型 = 类型
+                        elif 用户结果.get('is_blue_verified'):
+                            认证类型 = "蓝V"
+                                
+                        # 提取地区和个人简介
+                        位置信息 = 用户结果.get('location') or {}
+                        地区 = 位置信息.get('location', '')
+                        
+                        简介信息 = 用户结果.get('profile_bio') or {}
+                        个人简介 = 简介信息.get('description', '')
 
                         # 提取我们需要的高级数据
                         缓存数据 = {
@@ -127,6 +133,8 @@ def update_cache_from_packet(数据包响应):
                             "认证类型": 认证类型,
                             "关注状态": "已关注" if 用户结果.get('relationship_perspectives', {}).get('following') else "未关注",
                             "是否关注我": "是" if 用户结果.get('relationship_perspectives', {}).get('followed_by') else "否",
+                            "地区": 地区,
+                            "个人简介": 个人简介,
                             "主页链接": f"https://x.com/{用户名}"
                         }
                         
@@ -199,6 +207,8 @@ def 提取单个用户数据_混合(元素对象):
             "认证类型": 缓存.get("认证类型", "白板"),
             "关注状态": 缓存.get("关注状态", "未知"), 
             "是否关注我": 缓存.get("是否关注我", "未知"),
+            "地区": 缓存.get("地区", ""),
+            "个人简介": 缓存.get("个人简介", ""),
             "主页链接": f"https://x.com/{纯用户名}"
         }
 
@@ -208,7 +218,7 @@ def 提取单个用户数据_混合(元素对象):
 def 主程序():
     页面 = 初始化浏览器()
     
-    目标链接, 延迟 = 获取用户输入()
+    目标链接, 延迟, 包含简介 = 获取用户输入()
     
     if 目标链接:
         print(f"{Fore.CYAN}即将导航到: {目标链接}")
@@ -240,7 +250,10 @@ def 主程序():
     时间戳 = time.strftime("%Y%m%d_%H%M%S")
     文件名 = f"关注列表导出_{时间戳}.csv"
     文件已存在 = os.path.isfile(文件名)
-    表头 = ["用户名", "显示名称", "粉丝数", "关注数", "XHunt评分", "认证类型", "关注状态", "是否关注我", "主页链接"]
+    表头 = ["用户名", "显示名称", "粉丝数", "关注数", "XHunt评分", "认证类型", "关注状态", "是否关注我", "地区"]
+    if 包含简介:
+        表头.append("个人简介")
+    表头.append("主页链接")
     
     已提取用户集合 = set() # 记录已写入 CSV 的用户名
     
@@ -261,7 +274,7 @@ def 主程序():
 
     try:
         with open(文件名, 'a', newline='', encoding='utf-8-sig') as 文件:
-            写入器 = csv.DictWriter(文件, fieldnames=表头)
+            写入器 = csv.DictWriter(文件, fieldnames=表头, extrasaction='ignore')
             if not 文件已存在: 写入器.writeheader()
 
             while True:
